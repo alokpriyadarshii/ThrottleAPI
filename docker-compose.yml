@@ -1,0 +1,10 @@
+services:
+  quotaguard:
+    build: .
+    ports:
+      - "8080:8080"
+    environment:
+      # comma-separated keys
+      - QUOTAGUARD_SECURITY_API_KEYS=local-dev-key
+      - QUOTAGUARD_DEFAULT_POLICY_CAPACITY=10
+      - QUOTAGUARD_DEFAULT_POLICY_REFILL_TOKENS_PER_SECOND=1.0

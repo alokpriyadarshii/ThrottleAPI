@@ -49,3 +49,4 @@ echo "== acquire 20 =="; curl -sS -X POST "$API/api/v1/limits/user-1:acquire" \
 | python3 -m json.tool
 
 echo "Done. Server will stop now. Logs: /tmp/quota-guard.log"
+

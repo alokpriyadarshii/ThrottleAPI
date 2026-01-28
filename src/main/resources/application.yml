@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: quota-guard
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+
+quotaguard:
+  limiter:
+    mode: in-memory
+  default-policy:
+    capacity: 10
+    refillTokensPerSecond: 1.0
+  security:
+    api-keys:
+      - local-dev-key
