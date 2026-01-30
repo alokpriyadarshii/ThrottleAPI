@@ -76,6 +76,9 @@ public class InMemoryTokenBucketRateLimiter implements RateLimiter {
     if (permits <= 0) {
       throw new IllegalArgumentException("permits must be > 0");
     }
+     if (permits > policy.capacity()) {
+      throw new IllegalArgumentException("permits must be <= policy capacity");
+    }
   }
 
   private static BucketState refill(BucketState state, RateLimitPolicy policy, long nowNanos) {
