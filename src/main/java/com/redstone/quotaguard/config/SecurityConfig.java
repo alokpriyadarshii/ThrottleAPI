@@ -19,13 +19,19 @@ public class SecurityConfig {
 
     http
         .csrf(csrf -> csrf.disable())
-        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
-            .anyRequest().authenticated())
-        .httpBasic(Customizer.withDefaults());
+     .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-    http.addFilterBefore(new ApiKeyAuthenticationFilter(keys), UsernamePasswordAuthenticationFilter.class);
+    if (keys.isEmpty()) {
+      http.authorizeHttpRequests(auth -> auth
+          .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
+          .anyRequest().permitAll());
+    } else {
+      http.authorizeHttpRequests(auth -> auth
+          .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
+          .anyRequest().authenticated())
+          .httpBasic(Customizer.withDefaults());
+      http.addFilterBefore(new ApiKeyAuthenticationFilter(keys), UsernamePasswordAuthenticationFilter.class);
+    }
 
     return http.build();
   }
