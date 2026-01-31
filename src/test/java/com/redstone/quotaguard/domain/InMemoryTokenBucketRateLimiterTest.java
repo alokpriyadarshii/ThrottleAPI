@@ -19,6 +19,17 @@ class InMemoryTokenBucketRateLimiterTest {
   }
 
   @Test
+  void rejectsWhenPermitsExceedCapacityWithoutThrowing() {
+    RateLimiter limiter = new InMemoryTokenBucketRateLimiter();
+    RateLimitPolicy policy = new RateLimitPolicy("t", 5, 1.0);
+
+    AcquireResult r = limiter.acquire("k", policy, 6);
+    assertFalse(r.allowed());
+    assertEquals(5.0, r.remainingTokens(), 0.0001);
+    assertEquals(Long.MAX_VALUE, r.retryAfterMs());
+  }
+
+  @Test
   void refillsOverTime() throws Exception {
     RateLimiter limiter = new InMemoryTokenBucketRateLimiter();
     RateLimitPolicy policy = new RateLimitPolicy("t", 2, 10.0); // 10 tokens/s
