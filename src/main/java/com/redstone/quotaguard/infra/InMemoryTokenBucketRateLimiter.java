@@ -35,6 +35,11 @@ public class InMemoryTokenBucketRateLimiter implements RateLimiter {
 
       BucketState refilled = refill(state, policy, now);
 
+      if (permits > policy.capacity()) {
+        box.result = AcquireResult.rejected(refilled.tokens, Long.MAX_VALUE);
+        return new BucketState(refilled.tokens, now);
+      }
+
       if (refilled.tokens >= permits) {
         double remaining = refilled.tokens - permits;
         box.result = AcquireResult.allowed(remaining);
@@ -75,9 +80,6 @@ public class InMemoryTokenBucketRateLimiter implements RateLimiter {
     }
     if (permits <= 0) {
       throw new IllegalArgumentException("permits must be > 0");
-    }
-     if (permits > policy.capacity()) {
-      throw new IllegalArgumentException("permits must be <= policy capacity");
     }
   }
 
