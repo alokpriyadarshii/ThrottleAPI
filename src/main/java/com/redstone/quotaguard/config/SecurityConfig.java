@@ -15,7 +15,10 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, QuotaGuardProperties props) throws Exception {
-    Set<String> keys = new HashSet<>(props.getSecurity().getApiKeys());
+        Set<String> keys = props.getSecurity().getApiKeys().stream()
+        .map(String::trim)
+        .filter(key -> !key.isBlank())
+        .collect(java.util.stream.Collectors.toCollection(HashSet::new));
 
     http
         .csrf(csrf -> csrf.disable())
