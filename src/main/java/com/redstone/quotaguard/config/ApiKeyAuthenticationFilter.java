@@ -31,14 +31,15 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
       FilterChain filterChain) throws ServletException, IOException {
 
     String key = request.getHeader(HEADER_NAME);
-    if (!StringUtils.hasText(key) || !allowedKeys.contains(key)) {
+    String trimmedKey = key == null ? null : key.trim();
+    if (!StringUtils.hasText(trimmedKey) || !allowedKeys.contains(trimmedKey)) {
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.getWriter().write("{\"error\":\"unauthorized\"}");
       return;
     }
 
-    Authentication auth = new ApiKeyAuthToken(key);
+    Authentication auth = new ApiKeyAuthToken(trimmedKey);
     SecurityContextHolder.getContext().setAuthentication(auth);
 
     filterChain.doFilter(request, response);
