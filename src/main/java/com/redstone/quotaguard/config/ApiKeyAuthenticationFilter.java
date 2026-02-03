@@ -33,6 +33,7 @@ public class ApiKeyAuthenticationFilter extends OncePerRequestFilter {
     String key = request.getHeader(HEADER_NAME);
     String trimmedKey = key == null ? null : key.trim();
     if (!StringUtils.hasText(trimmedKey) || !allowedKeys.contains(trimmedKey)) {
+      SecurityContextHolder.clearContext();
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
       response.setContentType(MediaType.APPLICATION_JSON_VALUE);
       response.getWriter().write("{\"error\":\"unauthorized\"}");
