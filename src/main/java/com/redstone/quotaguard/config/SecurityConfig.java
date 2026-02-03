@@ -1,6 +1,7 @@
 package com.redstone.quotaguard.config;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,14 +16,15 @@ public class SecurityConfig {
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity http, QuotaGuardProperties props) throws Exception {
-        Set<String> keys = props.getSecurity().getApiKeys().stream()
+    Set<String> keys = props.getSecurity().getApiKeys().stream()
+        .filter(Objects::nonNull)
         .map(String::trim)
         .filter(key -> !key.isBlank())
         .collect(java.util.stream.Collectors.toCollection(HashSet::new));
 
     http
         .csrf(csrf -> csrf.disable())
-     .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
     if (keys.isEmpty()) {
       http.authorizeHttpRequests(auth -> auth
