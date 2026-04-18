@@ -24,7 +24,7 @@ public class QuotaGuardProperties {
   }
 
   public static class DefaultPolicy {
-    private long capacity = 10;
+    private long capacity = 50;
     private double refillTokensPerSecond = 1.0;
 
     public long getCapacity() {
